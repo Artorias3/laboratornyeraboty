@@ -1,0 +1,31 @@
+#include <iostream> 
+#include <stdio.h> 
+
+int main(void)
+
+{
+	float L;
+	float t1;
+	float t2;
+	float V;
+	float V1;
+	float V2;
+
+	printf("L = ");
+	scanf_s("%f", &L);
+
+	printf("t1 = ");
+	scanf_s("%f", &t1);
+
+	printf("t2 = ");
+	scanf_s("%f", &t2);
+
+	V1 = L / t1;
+	V2 = L / t2;
+	V = (L / t1 - L / t2) / 2;
+
+	printf("river speed= %.2f\n", V);
+	system("pause");
+
+	return 0;
+}
