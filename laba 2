@@ -1,30 +1,38 @@
 #include <iostream> 
-#include <stdio.h>
-int main(void)
-{
-	float s; // сумма ряда
-	float a; // очередной элемент ряда
-	float c; // числитель очередного элемента ряда
-	float b; // знаменатель очередного элемента ряда
-	float eps; // пороговое значение
-	int sign; // знак очередного элемента ряда
-	printf("eps=");
+#include <stdio.h> 
+int main(void) 
+{ 
+	float s; // сумма ряда 
+	float a; // очередной элемент ряда 
+	float c; // числитель очередного элемента ряда 
+	float b; // знаменатель очередного элемента ряда 
+	float eps; // пороговое значение 
+	int sign; // знак очередного элемента ряда 
+	int n; // число элементов ряда
+	int i = 0;
+	printf("eps="); 
 	scanf_s("%f", &eps);
+	printf("n="); 
+	scanf_s("%d", &n);
 	s = 0;
-	sign = 1;
-	c = 3;
-	b = 1;
+	sign = 1; 
+	c = 3; 
+	b = 1; 
 	a = c / b;
-	while (a > eps)
-	{
-		s+= a * sign;
-		sign = -sign;
-		c = c + 1;
-		b = b + 3;
+	s+= a * sign; 
+	while (a > eps) 
+	{ 
+		i=i + 1;
+		sign = -sign; 
+		c = c + 1; 
+		b = b + 3; 
 		a = c / b;
-	}
-	
-	printf("Sum = %.6f\n", s);
-	system("pause");
-	return 0;
+		s+= a * sign; 
+		if (n==i)
+			break;
+	} 
+
+	printf("Sum = %.6f\n", s); 
+	system("pause"); 
+	return 0; 
 }
