@@ -1,0 +1,40 @@
+#include <stdio.h> 
+#define YES 1 
+#define NO 0 
+int main(void)
+{
+	int c;//текущий символ из потока 
+	int first_c;//первый символ в слове 
+	int prev_c; //предыдущий символ 
+	int flag;//признак слова 
+	int cnt;//счетчик 
+	int found_first;//признак того,что первая буква в слов такая же как и последняя 
+	int found_last;//признак того,что последняя буква в слов такая же как и первая 
+	cnt = 0;
+	flag = NO;
+	first_c = ' ';
+	prev_c = ' ';
+	while ((c = getchar()) != EOF)
+	{
+		if (prev_c == ' ' || prev_c == '.' || prev_c == '\n' || prev_c == ',')
+			first_c = c;
+		if (c == ' ' || c == '.' || c == '\n' || c == ',')
+		{
+			if (prev_c == first_c)
+			{
+				cnt = cnt + 1;
+			}
+			flag = NO;
+			first_c = ' ';
+		}
+		else
+		{
+			flag = YES;
+		}
+		prev_c = c;
+	}
+	printf("kolichestvo slov = %d\n", cnt);
+	getchar();
+	return 0;
+
+}
