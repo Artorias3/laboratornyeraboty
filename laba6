@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define N 10
+#define K 15
+int main()
+{
+int array[N][K], i = 0, j = 0, tmp = 0, maxNum = 0, minNum = 0, minPos = 0, maxPos = 0;
+srand(time(NULL));
+printf("initial array:\n");
+for (i = 0; i < N; i++)
+{
+for (j = 0; j < K; j++)
+{
+array[i][j] = -1000 + rand() % 2000;
+printf("%5d ", array[i][j]);
+}
+printf("\n\n");
+}
+maxNum = array[0][0];
+minNum = array[0][0];
+for (i = 0; i < N; i++)
+{
+for (j = 0; j < K; j++)
+{
+if (array[i][j] > maxNum)
+{
+maxNum = array[i][j];
+maxPos = i;
+}
+else if (array[i][j] < minNum)
+{
+minNum = array[i][j];
+minPos = i;
+}
+}
+}
+printf("\nminNum = %d, minPos = %d", minNum, minPos);
+printf("\nmaxNum = %d, maxPos = %d\n", maxNum, maxPos);
+printf("\nfinal array:\n");
+for (j = 0; j < K; j++)
+{
+tmp = array[maxPos][j];
+array[maxPos][j] = array[minPos][j];
+array[minPos][j] = tmp;
+}
+for (i = 0; i < N; i++)
+{
+for (j = 0; j < K; j++)
+{
+printf("%5d ", array[i][j]);
+}
+printf("\n\n");
+}
+printf("\n");
+system("pause");
+return 0;
+}
