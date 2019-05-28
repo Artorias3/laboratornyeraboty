@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define mask1 0x80000000
+#define mask1		0x80000000
+#define NUMOFBITS	sizeof(long)*8
 
 void print_binary(long num);
 
@@ -20,7 +21,7 @@ int main(void)
 	print_binary(N);
 
 	mask = mask1;
-	for (i = 0; i < 32; i++)
+	for (i = 0; i < NUMOFBITS; i++)
 	{
 		if ((N & mask) != 0)
 			cnt++;
@@ -28,17 +29,12 @@ int main(void)
 		mask = mask >> 1;
 	}
 
-	if ((--cnt % 2) == 1)
+	if (cnt % 2 == 1)
 	{
-		printf("\nUnable to determine the number of discharge.\n");
-		system("pause");
-		return 0;
-	}
-	else
-	{
+		cnt--;
 		cnt = cnt / 2;
 		mask = mask1;
-		for (i = 0; i <= 32; i++)
+		for (i = NUMOFBITS - 1; i >= 0; i--)
 		{
 			if ((N & mask) != 0)
 			{
@@ -54,6 +50,33 @@ int main(void)
 			mask = mask >> 1;
 		}
 	}
+	else
+	{
+		cnt = cnt / 2;
+		mask = mask1;
+		for (i = NUMOFBITS - 1; i >= 0; i--)
+		{
+			if (cnt != 0)
+			{
+				if ((N & mask) != 0)
+					cnt--;
+			}
+
+			else if ((N & mask) == 0  && N != 0)
+				
+			{
+				printf("\nThe number of discharge: %d\n", i);
+				break;
+			}
+			else
+			{
+				printf("\nUnable to determine the number of discharge\n");
+				break;
+			}
+
+			mask = mask >> 1;
+		}
+	}
 	printf("\n");
 	system("pause");
 	return 0;
@@ -64,7 +87,7 @@ void print_binary(long num)
 	int i = 0;
 	unsigned int mask = mask1;
 	printf("\nbinary N: ");
-	for (i = 1; i <= 32; i++)
+	for (i = 1; i <= NUMOFBITS; i++)
 	{
 		if ((num & mask) == 0)
 			printf("0");
