@@ -1,0 +1,65 @@
+#include<stdio.h>
+#define YES 1
+#define NO 0
+#define MAXLINE 1000
+
+int main(void)
+{
+	char line[MAXLINE], *word_ptr, *symbol_ptr, *out_ptr, *ptr1, *ptr2, c;
+	int flag, nflag, found;
+
+	fgets(line, MAXLINE, stdin);			// запоминаем строку в массив 
+	word_ptr = line;	// указатель на начало текущего слова
+	symbol_ptr = line;	// указатель на текущий символ входной строки
+	out_ptr = line;		// указатель на текущий символ выходной строки
+	ptr1 = line;		// указатель на сравниваемую букву в слове
+	ptr2 = line;		// указатель на букву с которой сравниваем
+	flag = NO;			// признак слова
+	nflag = NO;			// признак цифры в слове
+	found = NO;			// признак удаления слова
+
+	// цикл посимвольной проверки строки
+	do {
+		c = *symbol_ptr;
+
+		if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')		// не разделитель
+		{
+			if (flag == NO)		// первая буква в слове
+				word_ptr = symbol_ptr;	// запоминаем начало слова	
+			flag = YES;
+		}
+		else if (c >= '0' && c <= '9')	// цифра 
+		{
+			if (flag == NO)		// первый символ после разделителя
+			{
+				word_ptr = symbol_ptr;	// запоминаем начало слова
+				flag = YES;
+			}
+			nflag = YES;
+		}
+		else	// разделитель
+		{
+			if (flag == YES)	// первый разделитель после слова
+			{
+				// сравниваем буквы и если хотя бы одна повторяется,
+				// меняем found на YES
+				for (ptr1 = word_ptr; ptr1 < symbol_ptr; ptr1++)
+					for (ptr2 = ptr1 + 1; ptr2 <= symbol_ptr; ptr2++)
+						found = (*ptr1 == *ptr2) ? YES : found;
+
+				if (found == NO || nflag == YES)	// слово не надо удалять
+					while (word_ptr < symbol_ptr)	// копируем его в выходную строку
+						*out_ptr++ = *word_ptr++;
+			}
+			flag = NO;
+			nflag = NO;
+			found = NO;
+			*out_ptr++ = c;	   // копируем в выходную строку текущий разделитель
+		}
+		symbol_ptr++;
+	} while (c != '\0');
+
+	puts(line);	 // выводим строку на экран
+	getchar();
+	return 0;
+}
