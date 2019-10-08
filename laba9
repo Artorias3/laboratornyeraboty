@@ -1,0 +1,137 @@
+#pragma warning (disable : 4996)
+#include <stdio.h>
+#include <string.h>
+#define NO 0
+#define YES 1
+#define MAXLEN 300
+
+int wordcnt(char buf[]);	// функция возвращает количество слов в строке
+
+int main(void)
+{
+	FILE *infd, *outfd;
+	char string[MAXLEN];
+	int maxllen, llen, spaces, usspaces, wnum, flag, i;
+
+	flag = NO;		// опускаем флаг признака слова
+	maxllen = 0;	
+	infd = fopen("f1.txt", "r");	
+
+	if (infd == NULL)
+	{
+		printf("file can not open\n");	
+		getchar();
+		return 0;	
+	}
+
+	do {
+		fgets(string, MAXLEN - 1, infd);	// записываем строку из файла в массив
+		llen = strlen(string);		// находим длину текущей строки
+		if (llen > maxllen)
+			maxllen = llen;	// запоминаем новую максимальную длину строки
+	} while (feof(infd) == NULL);
+
+	rewind(infd);	// ставим указатель на начало файла
+	outfd = fopen("f2.txt", "w+");		
+
+	if (outfd == NULL)
+	{
+		printf("file can not open\n");
+		getchar();
+		return 0;	
+	}
+
+	// цикл пока не считаем все строки и не достигнем конца файла
+	while (1)
+	{
+		fgets(string, MAXLEN - 1, infd);	
+		wnum = wordcnt(string) - 1;		
+
+		// если количество промежутков меньше 1
+		if (wnum < 1)
+		{
+			fputs(string, outfd);	
+			continue;	
+		}
+
+		llen = strlen(string);		
+		spaces = (maxllen - llen) / wnum;	
+		usspaces = (maxllen - llen) % wnum;	
+		i = maxllen;	// устанавливаем индекс элемента массива на его конец
+		flag = NO;		// опускаем признак слова
+
+		// цикл пока не дойдем от конца строки до ее начала
+		while (i >= 0)
+		{
+			// если найдена буква
+			if ((string[llen] >= 'a' && string[llen] <= 'z') ||
+				(string[llen] >= 'A' && string[llen] <= 'Z') ||
+				(string[llen] >= '0' && string[llen] <= '9'))
+			{
+				flag = YES;	// поднимаем флаг слова
+			}
+			// если найден разделитель
+			else
+			{
+				// если первый разделитель и вставлены еще не все несимметричные пробелы
+				if (flag == YES && usspaces > 0)
+				{
+					string[i] = ' ';	// записываем в результирующую строку пробел
+					i--;		// уменьшаем индекс результирующей строки
+					usspaces--;	
+				}
+
+				// если первый разделитель и пройдены не все промежутки между словами
+				if (flag == YES && wnum > 0)
+				{
+					// в найденый промежуток вставляем необходимое число пробелов
+					for (int j = spaces; j > 0; j--)
+					{
+						string[i] = ' ';	// записываем в результирующую строку пробел
+						i--;		// уменьшаем индекс результирующей строки 
+					}
+					wnum--;		
+				}
+				flag = NO;	
+			}
+			string[i] = string[llen];	// переносим в результирующую строку текущий символ
+			i--;		
+			llen--;		
+		}
+
+		// если сейчас не последняя строка
+		if (feof(infd) == NULL)
+			fputs(string, outfd);	// выводим отредактированную строку в файл
+		// иначе
+		else
+			break;	
+	}
+	return 0;
+}
+
+int wordcnt(char buf[])
+{
+	int wnum, i, flag;
+
+	wnum = 0;
+	i = 0;	// обнуляем счетчик индекса массива
+	flag = NO;	
+
+	// цикл пока не дойдем до конца строки
+	while (buf[i] != '\0')
+	{
+		// если найдена буква
+		if ((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] >= 'A' && buf[i] <= 'Z') || (buf[i] >= '0' && buf[i] <= '9'))
+		{
+			// если эта первая буква в слове, то прибавляем 1 к счетчику слов
+			wnum = (flag == NO) ? wnum + 1 : wnum;
+			flag = YES;		
+		}
+		// если найден разделитель
+		else
+			flag = NO;	
+
+		i++;
+	}
+	return wnum;	// возвращаем количество слов в строке
+}
