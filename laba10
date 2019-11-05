@@ -1,0 +1,61 @@
+#pragma warning (disable : 4996)
+#include <stdio.h>
+#include <stdlib.h>
+
+#define YES 1
+#define NO 0
+
+int main(void)
+{
+	FILE *in_fd, *out_fd;			
+	char **stringarr, *string, c;	// массив строк, текущая строка, текущий символ
+	int str_cnt, let_cnt;			// счетчик сохраненных строк, счетчик букв в текущей строке
+
+	if (!(in_fd = fopen("infile.txt", "r")) || !(out_fd = fopen("outfile.txt", "w")))
+	{
+		perror("Error while opening file");	
+		system("pause");
+		return -1;		
+	}
+
+	str_cnt = 0;
+	let_cnt = 0;
+	stringarr = NULL;
+	string = NULL;
+
+	do {
+		c = fgetc(in_fd);	// берем один символ из входного файла
+
+		// проверяем если это последний символ в строке
+		if (c == '\n' || c == EOF)
+		{
+			stringarr = (char**)realloc(stringarr, (str_cnt + 1) * sizeof(char*));	// выделяем память под еще однку строрку
+			string = (char*)realloc(string, (let_cnt + 2) * sizeof(char));	// выделяем память под символ переноса и символ конца строки
+			string[let_cnt++] = (c == EOF) ? '\n' : c;	// записываем символ переноса строки в текущюю строчку
+			string[let_cnt] = '\0';		// записываем туда же символ конца строки
+			stringarr[str_cnt++] = string;	// добавляем указатель на строку в массив строк и увеличиваем счетчик строк
+			string = NULL;	// обнуляем указатель на текущюю строку
+			let_cnt = 0;	// обнуляем счетчик букв в строке
+		}
+		// иначе, если это не последний символ в строке
+		else
+		{
+			string = (char*)realloc(string, (let_cnt + 1) * sizeof(char));	// выделяем память под новый символ текущей строки
+			string[let_cnt++] = c;	// записываем его в текущюю строку и увеличиваем счетчик символов
+		}
+
+	} while (c != EOF);
+
+	str_cnt--;	// вычитаем лишнюю строку из счетчика
+	while (str_cnt >= 0)
+	{
+		fputs(stringarr[str_cnt], out_fd);	// выводим строку
+		free(stringarr[str_cnt--]);	// освобождаем память выделенную под эту строку и уменьшаем счетчик строк
+	}
+
+	fclose(out_fd);	// закрываем файлы
+	fclose(in_fd);
+	printf("The program was successfully completed\n");
+	system("pause");
+	return 0;
+}
